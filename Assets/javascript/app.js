@@ -16,23 +16,39 @@ function getResults() {
     })
 }
 
-// authorizeSpotify();
+authorizeSpotify();
 // getResults();
 
 function authorizeSpotify() {
     var URL = "https://accounts.spotify.com/authorize";
     var clientId = spotifyKey;
     var responseType = "token";
-    var redirectURI = "http://localhost:3000//";
+    var redirectURI = "http://localhost:3000/";
 
     var queryString = URL + "?client_id=" + clientId + "&redirect_uri=" + redirectURI + "&response_type=" + responseType;
     var queryURL = encodeURI(queryString);
 
     console.log(queryURL);
+    console.log(window.location.href);
+    var accessToken = window.location.href.match(/\#(?:access_token)\=([\S\s]*?)\&/)[1];
+    console.log(accessToken);
+   
+   
+    $.ajax({
+        url: 'https://api.spotify.com/v1/me',
+        headers: {
+            'Authorization': 'Bearer ' + accessToken
+        },
+        success: function(response) {
+            getResults();
+            console.log(response);
+        }
+        
+})
 }
 
 //sample call
-setPlaylist("spotify:album:06SgT5Cjd1F7WjpSqZXMOv");
+setPlaylist("spotify:user:spotify:playlist:37i9dQZF1DX1gRalH1mWrP");
 
 function setPlaylist(uri) {
     var url = "https://open.spotify.com/embed?uri="
