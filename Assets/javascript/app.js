@@ -32,19 +32,19 @@ function authorizeSpotify() {
     console.log(window.location.href);
     var accessToken = window.location.href.match(/\#(?:access_token)\=([\S\s]*?)\&/)[1];
     console.log(accessToken);
-   
-   
+
+
     $.ajax({
         url: 'https://api.spotify.com/v1/me',
         headers: {
             'Authorization': 'Bearer ' + accessToken
         },
-        success: function(response) {
+        success: function (response) {
             getResults();
             console.log(response);
         }
-        
-})
+
+    })
 }
 
 //sample call
@@ -57,4 +57,28 @@ function setPlaylist(uri) {
     // uri=spotify:album:1DFixLWuPkv3KT3TnV35m3
     $("#spotifyPlayer").attr("src", frameSrc);
     console.log(frameSrc);
+}
+
+
+getLocation();
+
+
+// Accuweather code
+
+function getLocation() {
+    var URL = "http://dataservice.accuweather.com/locations/v1/cities/search";
+    var searchTerm = "matawan";
+    var key = accuweatherKey;
+    var queryString = URL + "?apikey=" + key + "&q=" + searchTerm;
+    var queryURL = encodeURI(queryString);
+    console.log(queryURL);
+    
+
+    $.ajax({
+        url: queryURL,
+        method: "GET"
+    }).then(function (response) {
+        console.log(response);
+    })
+
 }
