@@ -1,6 +1,6 @@
 // Spotify Call
 
-authorizeSpotify();
+// authorizeSpotify();
 
 
 function getResults(st) {
@@ -32,9 +32,9 @@ function authorizeSpotify(st) {
     var queryURL = encodeURI(queryString);
 
     console.log(queryURL);
-    console.log(window.location.href);
+    // console.log(window.location.href);
     var accessToken = window.location.href.match(/\#(?:access_token)\=([\S\s]*?)\&/)[1];
-    console.log(accessToken);
+    // console.log(accessToken);
 
 
     $.ajax({
@@ -43,7 +43,7 @@ function authorizeSpotify(st) {
             'Authorization': 'Bearer ' + accessToken
         },
         success: function (response) {
-            getResults(st);
+           // getResults(st);
             console.log(response);
         }
 
@@ -95,7 +95,8 @@ function getLocation() {
         }).then(function (currWeather) {
             console.log(currWeather)
             var searchTerm = currWeather[0].WeatherText;
-            authorizeSpotify(searchTerm)
+            //authorizeSpotify(searchTerm)
+            getResults(searchTerm);
         })
     })
 }
