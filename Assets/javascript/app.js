@@ -1,13 +1,16 @@
 // Spotify Call
+
+authorizeSpotify();
+
+
+function getResults(st) {
 var URL = "https://api.spotify.com/v1/search";
-var searchTerm = "summer";
+var searchTerm = st;
 var searchType = "playlist";
 var market = "us";
 var queryString = URL + "?q=" + searchTerm + "&type=" + searchType + "&market=" + market;
 var queryURL = encodeURI(queryString);
 console.log(queryURL);
-
-function getResults() {
     $.ajax({
         url: queryURL,
         method: "GET"
@@ -16,10 +19,10 @@ function getResults() {
     })
 }
 
-authorizeSpotify();
+
 // getResults();
 
-function authorizeSpotify() {
+function authorizeSpotify(st) {
     var URL = "https://accounts.spotify.com/authorize";
     var clientId = spotifyKey;
     var responseType = "token";
@@ -40,7 +43,7 @@ function authorizeSpotify() {
             'Authorization': 'Bearer ' + accessToken
         },
         success: function (response) {
-            getResults();
+            getResults(st);
             console.log(response);
         }
 
@@ -72,13 +75,27 @@ function getLocation() {
     var queryString = URL + "?apikey=" + key + "&q=" + searchTerm;
     var queryURL = encodeURI(queryString);
     console.log(queryURL);
-    
+
 
     $.ajax({
         url: queryURL,
         method: "GET"
     }).then(function (response) {
         console.log(response);
+        
+        var URL = "http://dataservice.accuweather.com/currentconditions/v1/"
+        var location = response[0].Key;
+        var queryString = URL + location + "?apikey=" + key + "&details=true";
+        var qURL = encodeURI(queryString);
+        console.log(qURL)
+        
+        $.ajax({
+            url: qURL,
+            method: "GET"
+        }).then(function (currWeather) {
+            console.log(currWeather)
+            var searchTerm = currWeather[0].WeatherText;
+            authorizeSpotify(searchTerm)
+        })
     })
-
 }
