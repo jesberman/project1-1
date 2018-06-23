@@ -1,28 +1,50 @@
 // Spotify Call
+getResults("overcast");
+function storeToken(at) {
+    localStorage.clear();
+    localStorage.setItem("token", JSON.stringify(at));
+}
 
-// authorizeSpotify();
-
-
-function getResults(st) {
-var URL = "https://api.spotify.com/v1/search";
-var searchTerm = st;
-var searchType = "playlist";
-var market = "us";
-var queryString = URL + "?q=" + searchTerm + "&type=" + searchType + "&market=" + market;
-var queryURL = encodeURI(queryString);
-console.log(queryURL);
-    $.ajax({
-        url: queryURL,
-        method: "GET"
-    }).then(function (response) {
-        console.log(response);
-    })
+function getToken() {
+    if (localStorage.getItem("token") != null) {
+        token = JSON.parse(localStorage.getItem("token"));
+        return token;
+    } else {
+        return false;
+    }
 }
 
 
-// getResults();
+function getResults(st) {
+    var URL = "https://api.spotify.com/v1/search";
+    var searchTerm = st;
+    var searchType = "playlist";
+    var market = "us";
+    var queryString = URL + "?q=" + searchTerm + "&type=" + searchType + "&market=" + market;
+    var queryURL = encodeURI(queryString);
 
-function authorizeSpotify(st) {
+
+    getToken();
+    if (getToken() === false) {
+        authorizeSpotify()
+    } else {
+        accessToken = token;
+        console.log(queryURL);
+        $.ajax({
+            url: queryURL,
+            method: "GET",
+            headers: {
+                'Authorization': 'Bearer ' + accessToken
+            },
+        }).then(function (response) {
+            console.log(response);
+        });
+    }
+}
+
+
+
+function authorizeSpotify() {
     var URL = "https://accounts.spotify.com/authorize";
     var clientId = spotifyKey;
     var responseType = "token";
@@ -32,22 +54,23 @@ function authorizeSpotify(st) {
     var queryURL = encodeURI(queryString);
 
     console.log(queryURL);
-    // console.log(window.location.href);
     var accessToken = window.location.href.match(/\#(?:access_token)\=([\S\s]*?)\&/)[1];
-    // console.log(accessToken);
+    storeToken(accessToken);
 
 
-    $.ajax({
-        url: 'https://api.spotify.com/v1/me',
-        headers: {
-            'Authorization': 'Bearer ' + accessToken
-        },
-        success: function (response) {
-           // getResults(st);
-            console.log(response);
-        }
 
-    })
+
+
+    // $.ajax({
+    //     url: 'https://api.spotify.com/v1/me',
+    //     headers: {
+    //         'Authorization': 'Bearer ' + accessToken
+    //     },
+    //     success: function (response) {
+    //         getResults(st);
+    //         console.log(response);
+    //     }
+    // })
 }
 
 //sample call
@@ -82,13 +105,13 @@ function getLocation() {
         method: "GET"
     }).then(function (response) {
         console.log(response);
-        
+
         var URL = "http://dataservice.accuweather.com/currentconditions/v1/"
         var location = response[0].Key;
         var queryString = URL + location + "?apikey=" + key + "&details=true";
         var qURL = encodeURI(queryString);
         console.log(qURL)
-        
+
         $.ajax({
             url: qURL,
             method: "GET"
