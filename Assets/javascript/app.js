@@ -1,5 +1,11 @@
 // Spotify Call
+
+var authAttempts = 0;
+var authorized;
+
 getResults("overcast");
+
+
 function storeToken(at) {
     localStorage.clear();
     localStorage.setItem("token", JSON.stringify(at));
@@ -24,9 +30,8 @@ function getResults(st) {
     var queryURL = encodeURI(queryString);
 
 
-    getToken();
-    if (getToken() === false) {
-        authorizeSpotify()
+    if (checkAuth() === 0) {
+        // if auth call fails get the token
     } else {
         accessToken = token;
         console.log(queryURL);
@@ -49,29 +54,71 @@ function authorizeSpotify() {
     var clientId = spotifyKey;
     var responseType = "token";
     var redirectURI = "http://localhost:3000/";
-
     var queryString = URL + "?client_id=" + clientId + "&redirect_uri=" + redirectURI + "&response_type=" + responseType;
     var queryURL = encodeURI(queryString);
 
-    console.log(queryURL);
-    var accessToken = window.location.href.match(/\#(?:access_token)\=([\S\s]*?)\&/)[1];
-    storeToken(accessToken);
-
-
-
-
-
-    // $.ajax({
-    //     url: 'https://api.spotify.com/v1/me',
-    //     headers: {
-    //         'Authorization': 'Bearer ' + accessToken
-    //     },
-    //     success: function (response) {
-    //         getResults(st);
-    //         console.log(response);
-    //     }
-    // })
+    $.ajax({
+        url: queryURL,
+        method: "GET"
+    }).then(function (response) {
+        //console.log(queryURL);
+        var accessToken = window.location.href.match(/\#(?:access_token)\=([\S\s]*?)\&/)[1];
+        storeToken(accessToken);
+    })
 }
+
+
+
+
+
+
+function checkAuth() {
+    if (authAttempts < 4) {
+        if (getToken() === false) {
+            authorized = 0;
+            authAttempts++;
+            authorizeSpotify();
+            checkAuth();
+        } else {
+            accessToken = token;
+            $.ajax({
+                url: 'https://api.spotify.com/v1/me',
+                headers: {
+                    'Authorization': 'Bearer ' + accessToken
+                },
+                success: function (response) {
+                    alert("success")
+                    authorized = 1;
+                    authAttempts = 0
+                    return 1;
+                },
+                error: function (response) {
+                    authorized = 0
+                    authAttempts++
+                    authorizeSpotify();
+                    checkAuth();
+                }
+            })
+        }
+    } else {
+        alert("can't login")
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //sample call
 setPlaylist("spotify:user:spotify:playlist:37i9dQZF1DX1gRalH1mWrP");
