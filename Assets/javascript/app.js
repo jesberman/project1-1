@@ -3,7 +3,7 @@
 var authAttempts = 0;
 var authorized = 0;
 
-// getResults("overcast");
+getResults("overcast");
 
 
 function storeToken(at) {
@@ -46,6 +46,7 @@ function getResults(st) {
             },
         }).then(function (response) {
             console.log(response);
+
         });
     }
 }
@@ -56,7 +57,7 @@ function authorizeSpotify() {
     var URL = "https://accounts.spotify.com/authorize";
     var clientId = spotifyKey;
     var responseType = "token";
-    var redirectURI = "http://localhost:3000/";
+    var redirectURI = "http://localhost:3000/user_input_location.html";
     var queryString = URL + "?client_id=" + clientId + "&redirect_uri=" + redirectURI + "&response_type=" + responseType;
     var queryURL = encodeURI(queryString);
 
@@ -131,40 +132,40 @@ function setPlaylist(uri) {
 }
 
 
-getLocation();
+// getLocation();
 
 
-// Accuweather code
+// // Accuweather code
 
-function getLocation() {
-    var URL = "http://dataservice.accuweather.com/locations/v1/cities/search";
-    var searchTerm = "matawan";
-    var key = accuweatherKey;
-    var queryString = URL + "?apikey=" + key + "&q=" + searchTerm;
-    var queryURL = encodeURI(queryString);
-    console.log(queryURL);
+// function getLocation() {
+//     var URL = "http://dataservice.accuweather.com/locations/v1/cities/search";
+//     var searchTerm = "matawan";
+//     var key = accuweatherKey;
+//     var queryString = URL + "?apikey=" + key + "&q=" + searchTerm;
+//     var queryURL = encodeURI(queryString);
+//     console.log(queryURL);
 
 
-    $.ajax({
-        url: queryURL,
-        method: "GET"
-    }).then(function (response) {
-        console.log(response);
+//     $.ajax({
+//         url: queryURL,
+//         method: "GET"
+//     }).then(function (response) {
+//         console.log(response);
 
-        var URL = "http://dataservice.accuweather.com/currentconditions/v1/"
-        var location = response[0].Key;
-        var queryString = URL + location + "?apikey=" + key + "&details=true";
-        var qURL = encodeURI(queryString);
-        console.log(qURL)
+//         var URL = "http://dataservice.accuweather.com/currentconditions/v1/"
+//         var location = response[0].Key;
+//         var queryString = URL + location + "?apikey=" + key + "&details=true";
+//         var qURL = encodeURI(queryString);
+//         console.log(qURL)
 
-        $.ajax({
-            url: qURL,
-            method: "GET"
-        }).then(function (currWeather) {
-            console.log(currWeather)
-            var searchTerm = currWeather[0].WeatherText;
-            //authorizeSpotify(searchTerm)
-            getResults(searchTerm);
-        })
-    })
-}
+//         $.ajax({
+//             url: qURL,
+//             method: "GET"
+//         }).then(function (currWeather) {
+//             console.log(currWeather)
+//             var searchTerm = currWeather[0].WeatherText;
+//             //authorizeSpotify(searchTerm)
+//             getResults(searchTerm);
+//         })
+//     })
+// }
