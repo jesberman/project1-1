@@ -1,7 +1,7 @@
 // Spotify Call
 
 var authAttempts = 0;
-var authorized;
+var authorized = 0;
 
 getResults("overcast");
 
@@ -15,6 +15,9 @@ function getToken() {
     if (localStorage.getItem("token") != null) {
         token = JSON.parse(localStorage.getItem("token"));
         return token;
+    } else if (window.location.href.match(/\#(?:access_token)\=([\S\s]*?)\&/) !== null) {
+        var accessToken = window.location.href.match(/\#(?:access_token)\=([\S\s]*?)\&/)[1];
+        storeToken(accessToken);
     } else {
         return false;
     }
@@ -30,10 +33,10 @@ function getResults(st) {
     var queryURL = encodeURI(queryString);
 
 
-    if (checkAuth() === 0) {
-        // if auth call fails get the token
+    if (authorized === 0) {
+        checkAuth();
     } else {
-        accessToken = token;
+        accessToken = getToken();
         console.log(queryURL);
         $.ajax({
             url: queryURL,
@@ -57,14 +60,9 @@ function authorizeSpotify() {
     var queryString = URL + "?client_id=" + clientId + "&redirect_uri=" + redirectURI + "&response_type=" + responseType;
     var queryURL = encodeURI(queryString);
 
-    $.ajax({
-        url: queryURL,
-        method: "GET"
-    }).then(function (response) {
-        //console.log(queryURL);
-        var accessToken = window.location.href.match(/\#(?:access_token)\=([\S\s]*?)\&/)[1];
-        storeToken(accessToken);
-    })
+    console.log(queryURL);
+    window.location = queryURL; 
+
 }
 
 
@@ -80,14 +78,14 @@ function checkAuth() {
             authorizeSpotify();
             checkAuth();
         } else {
-            accessToken = token;
+            accessToken = getToken();
             $.ajax({
                 url: 'https://api.spotify.com/v1/me',
                 headers: {
                     'Authorization': 'Bearer ' + accessToken
                 },
                 success: function (response) {
-                    alert("success")
+                    // alert("success")
                     authorized = 1;
                     authAttempts = 0
                     return 1;
@@ -101,7 +99,7 @@ function checkAuth() {
             })
         }
     } else {
-        alert("can't login")
+        // alert("can't login")
     }
 }
 
