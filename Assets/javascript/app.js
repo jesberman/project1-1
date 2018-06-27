@@ -3,7 +3,7 @@
 var authAttempts = 0;
 var authorized = 0;
 
-getResults("overcast");
+// getResults("overcast");
 
 
 function storeToken(at) {
