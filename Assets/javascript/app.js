@@ -3,7 +3,7 @@
 var authAttempts = 0;
 var authorized = getValue("auth");
 
-getResults("rain");
+// getResults("rain");
 
 
 function storeToken(at) {
