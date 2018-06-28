@@ -1,9 +1,9 @@
 // Spotify Call
 
 var authAttempts = 0;
-var authorized = 0;
+var authorized = getValue("auth");
 
-getResults("overcast");
+getResults("rain");
 
 
 function storeToken(at) {
@@ -23,7 +23,17 @@ function getToken() {
     }
 }
 
+function storeValue(name,value) {
+    localStorage.setItem(name, JSON.stringify(value));
+}
 
+function getValue(name,value) {
+    if (localStorage.getItem(name) != null) {
+        return 1
+    } else {
+        return 0
+    }
+}
 function getResults(st) {
     var URL = "https://api.spotify.com/v1/search";
     var searchTerm = st;
@@ -46,12 +56,20 @@ function getResults(st) {
             },
         }).then(function (response) {
             console.log(response);
+            // 
+            var r = response.playlists.items;
+            var random = getRandomPlaylist(r)
+            var playlist = random.uri
+            setPlaylist(playlist);
 
         });
     }
 }
 
-
+function getRandomPlaylist(array) {
+    var random = array[Math.floor(Math.random()*array.length)];
+    return random;
+}
 
 function authorizeSpotify() {
     var URL = "https://accounts.spotify.com/authorize";
@@ -86,8 +104,9 @@ function checkAuth() {
                     'Authorization': 'Bearer ' + accessToken
                 },
                 success: function (response) {
-                    // alert("success")
+                    alert("success")
                     authorized = 1;
+                    storeValue("auth",1);
                     authAttempts = 0
                     return 1;
                 },
@@ -100,7 +119,7 @@ function checkAuth() {
             })
         }
     } else {
-        // alert("can't login")
+        alert("can't login")
     }
 }
 
@@ -120,7 +139,7 @@ function checkAuth() {
 
 
 //sample call
-setPlaylist("spotify:user:spotify:playlist:37i9dQZF1DX1gRalH1mWrP");
+// setPlaylist("spotify:user:spotify:playlist:37i9dQZF1DX1gRalH1mWrP");
 
 function setPlaylist(uri) {
     var url = "https://open.spotify.com/embed?uri="
