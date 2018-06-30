@@ -48,6 +48,7 @@ $(document).ready(function getWeather() {
       $("#feels-like").html("Feels Like: " + feelslikef + "°F");
       var feelslikec =  Math.round(((weatherdata.currently.apparentTemperature)-32)/(9/5));
       var summary = weatherdata.currently.summary;
+      // console.log(summary);
       $("#weather-description").html(summary);
       //skycons
       var icon = weatherdata.currently.icon;
@@ -62,7 +63,8 @@ $(document).ready(function getWeather() {
       console.log(tempf);
       console.log(summary);
       //Spotify
-      getResult.document.getElementById("weather-description");
+      var weather = document.getElementById("weather-description");
+      getResults(summary);
 
       //3-DAY FORECAST
       //convert future dates (given in API by seconds since Jan 1 1970) to day of the week

@@ -3,7 +3,7 @@
 var authAttempts = 0;
 var authorized = getValue("auth");
 
-// getResults("rain");
+// getResults(document.getElementById("weather-description"));
 
 
 function storeToken(at) {
@@ -75,7 +75,7 @@ function authorizeSpotify() {
     var URL = "https://accounts.spotify.com/authorize";
     var clientId = spotifyKey;
     var responseType = "token";
-    var redirectURI = "http://localhost:3000/user_input_location.html";
+    var redirectURI = "http://localhost:3000/auto_location.html";
     var queryString = URL + "?client_id=" + clientId + "&redirect_uri=" + redirectURI + "&response_type=" + responseType;
     var queryURL = encodeURI(queryString);
 
@@ -104,7 +104,7 @@ function checkAuth() {
                     'Authorization': 'Bearer ' + accessToken
                 },
                 success: function (response) {
-                    alert("success")
+                    // alert("success")
                     authorized = 1;
                     storeValue("auth",1);
                     authAttempts = 0
@@ -119,7 +119,7 @@ function checkAuth() {
             })
         }
     } else {
-        alert("can't login")
+        // alert("can't login")
     }
 }
 
