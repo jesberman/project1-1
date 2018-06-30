@@ -18,10 +18,16 @@ $(document).ready(function getWeather() {
         if (place.results[0].address_components[i].types[0]==="locality") {
           var city = place.results[0].address_components[i].long_name;
           $("#city").html(city.toUpperCase());
+          //firebase push
+          dataRef.push(city);
+          console.log(city);
         }
         if (place.results[0].address_components[i].types[0]==="administrative_area_level_1") {
           var state = place.results[0].address_components[i].long_name;
           $("#state").html(state.toUpperCase());
+          //firebase push
+          dataRef.push(state);
+          console.log(state);
         }
       }
     }); //end getJSON
@@ -49,7 +55,13 @@ $(document).ready(function getWeather() {
       var skycons = new Skycons({"color": "#A9DD9B"});
       skycons.set("weather-icon", icon);
       skycons.play();
-
+      //firebase
+      dataRef.push({
+        Temperature: tempf,
+        Current_Condition: summary,
+      });
+      console.log(tempf);
+      console.log(summary);
 
       //3-DAY FORECAST
       //convert future dates (given in API by seconds since Jan 1 1970) to day of the week
@@ -124,4 +136,18 @@ $(document).ready(function getWeather() {
       });//end f click
     }); //end getJSON
   }; //end getWeatherData
+
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyCtXs6s8vW8RY9OWIUbvcH5mag5JlCWdw8",
+    authDomain: "weatherapp-e8fe2.firebaseapp.com",
+    databaseURL: "https://weatherapp-e8fe2.firebaseio.com",
+    projectId: "weatherapp-e8fe2",
+    storageBucket: "weatherapp-e8fe2.appspot.com",
+    messagingSenderId: "362158132271"
+  };
+    
+    firebase.initializeApp(config);
+    var dataRef = firebase.database().ref("Weather/");
+      
 }); //end ready
