@@ -34,7 +34,6 @@ $(document).ready(function getWeather() {
     getWeatherData(lat, lon);
   } //end success
 
-
   function error() {
     alert("Geolocation requires a secure connection to work. Please add 'https://' to the beginning of this page's URL.");
   }
@@ -62,6 +61,8 @@ $(document).ready(function getWeather() {
       });
       console.log(tempf);
       console.log(summary);
+      //Spotify
+      getResult.document.getElementById("weather-description");
 
       //3-DAY FORECAST
       //convert future dates (given in API by seconds since Jan 1 1970) to day of the week
